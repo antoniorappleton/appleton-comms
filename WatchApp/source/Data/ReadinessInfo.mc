@@ -13,6 +13,8 @@ const ReadinessField_recents = "r";
 const ReadinessField_incomingCalls = "i";
 (:background, :glance, :readiness)
 const ReadinessField_starredContacts = "s";
+(:background, :glance, :readiness)
+const ReadinessField_messages = "m";
 
 (:background, :glance, :noReadiness)
 const ReadinessInfo_valueKey = "?";

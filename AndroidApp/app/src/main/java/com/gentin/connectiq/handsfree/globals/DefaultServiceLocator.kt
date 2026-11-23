@@ -56,7 +56,9 @@ import com.gentin.connectiq.handsfree.impl.phoneStatePojo
 import com.gentin.connectiq.handsfree.impl.phonesPojo
 import com.gentin.connectiq.handsfree.impl.readinessInfo
 import com.gentin.connectiq.handsfree.impl.readinessInfoPojo
+import com.gentin.connectiq.handsfree.impl.quickMessagesPojo
 import com.gentin.connectiq.handsfree.impl.recentsPojo
+import com.gentin.connectiq.handsfree.impl.sendSmsFromWatch
 import com.gentin.connectiq.handsfree.impl.strippedVersionedPojo
 import com.gentin.connectiq.handsfree.impl.subjectQueryName
 import com.gentin.connectiq.handsfree.impl.subjectQueryVersion
@@ -69,6 +71,7 @@ import com.gentin.connectiq.handsfree.terms.audioStateSubject
 import com.gentin.connectiq.handsfree.terms.companionInfoSubject
 import com.gentin.connectiq.handsfree.terms.phoneStateSubject
 import com.gentin.connectiq.handsfree.terms.phonesSubject
+import com.gentin.connectiq.handsfree.terms.quickMessagesSubject
 import com.gentin.connectiq.handsfree.terms.readinessInfoSubject
 import com.gentin.connectiq.handsfree.terms.recentsSubject
 
@@ -253,6 +256,11 @@ class DefaultServiceLocator(
             pongImp = { source ->
                 Log.d(TAG, "Pong: $source")
                 showPongNotification(this, source)
+            },
+            sendSmsImp = { _, phoneNumber, text ->
+                val allowedNumbers = availableContacts().contacts.map { it.number } +
+                    recents().list.map { it.number }
+                sendSmsFromWatch(this, phoneNumber, text, allowedNumbers)
             }
         )
     }
@@ -369,6 +377,12 @@ class DefaultServiceLocator(
                 readinessInfoSubject -> {
                     tracingElapsed(TAG, "readinessInfo") {
                         accountPojo(readinessInfoPojo(readinessInfo(context = this)))
+                    }
+                }
+
+                quickMessagesSubject -> {
+                    tracingElapsed(TAG, "quickMessages") {
+                        accountPojo(quickMessagesPojo(quickMessages(context = this)))
                     }
                 }
 

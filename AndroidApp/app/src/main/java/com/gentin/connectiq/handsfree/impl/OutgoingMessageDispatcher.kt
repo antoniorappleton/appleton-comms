@@ -429,3 +429,7 @@ fun companionInfoPojo(info: CompanionInfo): Any {
 fun readinessInfoPojo(info: ReadinessInfo): Any {
     return pojoMap(info)
 }
+
+fun quickMessagesPojo(messages: List<String>): Any {
+    return mapOf("m" to messages)
+}

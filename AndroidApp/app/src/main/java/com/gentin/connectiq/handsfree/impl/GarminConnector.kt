@@ -279,7 +279,7 @@ class DefaultGarminConnector(
             connectIQ.registerForAppEvents(device, app) { _, _, message, _ ->
                 for (o in message) {
                     val deviceTag = "device.${device.deviceIdentifier}(${device.friendlyName})"
-                    Log.d(TAG, "$deviceTag(${appLogName(app)}) -> $o")
+                    Log.d(TAG, "$deviceTag(${appLogName(app)}) -> ${redactedForLog(o)}")
                     dispatchIncomingMessage(o, IncomingMessageSource(device, app))
                 }
             }

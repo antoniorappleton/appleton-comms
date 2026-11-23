@@ -3,12 +3,18 @@ package com.gentin.connectiq.handsfree.fragments
 import android.Manifest
 import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.gentin.connectiq.handsfree.R
+import com.gentin.connectiq.handsfree.activities.invalidateSubjects
 import com.gentin.connectiq.handsfree.globals.DefaultServiceLocator
+import com.gentin.connectiq.handsfree.globals.quickMessages
+import com.gentin.connectiq.handsfree.globals.quickMessagesPreferenceKey
+import com.gentin.connectiq.handsfree.globals.quickMessagesText
 import com.gentin.connectiq.handsfree.helpers.BluetoothConnector
 import com.gentin.connectiq.handsfree.helpers.BluetoothConnectorImp
 import com.gentin.connectiq.handsfree.helpers.BluetoothStatus
@@ -16,6 +22,7 @@ import com.gentin.connectiq.handsfree.impl.DeviceInfo
 import com.gentin.connectiq.handsfree.impl.formattedDeviceInfos
 import com.gentin.connectiq.handsfree.impl.hasRequiredPermissionsForEssentials
 import com.gentin.connectiq.handsfree.impl.hasRequiredPermissionsForIncomingCalls
+import com.gentin.connectiq.handsfree.impl.hasRequiredPermissionsForMessages
 import com.gentin.connectiq.handsfree.impl.hasRequiredPermissionsForOutgoingCalls
 import com.gentin.connectiq.handsfree.impl.hasRequiredPermissionsForRecents
 import com.gentin.connectiq.handsfree.impl.hasRequiredPermissionsForStarredContacts
@@ -100,6 +107,42 @@ class SettingsFragment(private val preferencesResId: Int = R.xml.root_preference
             R.string.settings_starred_contacts_off,
             hasPermissions = { hasRequiredPermissionsForStarredContacts(requireContext()) }
         )
+        setupPermissionPreference(
+            messagesPreference,
+            R.string.settings_messages,
+            R.string.settings_messages_on,
+            R.string.settings_messages_off,
+            hasPermissions = { hasRequiredPermissionsForMessages(requireContext()) }
+        )
+        setupQuickMessagesPreference()
+    }
+
+    private fun setupQuickMessagesPreference() {
+        val preference = findPreference<EditTextPreference>(quickMessagesPreferenceKey) ?: return
+        val context = requireContext()
+        if (preference.text == null) {
+            preference.text = quickMessagesText(context)
+        }
+        preference.setOnBindEditTextListener { editText ->
+            editText.isSingleLine = false
+            editText.minLines = 4
+            editText.inputType = InputType.TYPE_CLASS_TEXT or
+                InputType.TYPE_TEXT_FLAG_MULTI_LINE or
+                InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+        }
+        preference.summaryProvider = Preference.SummaryProvider<EditTextPreference> {
+            val messages = quickMessages(context)
+            if (messages.isEmpty()) {
+                getString(R.string.settings_quick_messages_empty)
+            } else {
+                messages.joinToString("\n")
+            }
+        }
+        preference.setOnPreferenceChangeListener { _, _ ->
+            // Let the watch pick up the new list.
+            invalidateSubjects(context)
+            true
+        }
     }
 
     val bluetoothConnector: BluetoothConnector by lazy {
@@ -225,6 +268,11 @@ class SettingsFragment(private val preferencesResId: Int = R.xml.root_preference
     private val starredContactsPreference: Preference?
         get() {
             return findPreference("starred_contacts")
+        }
+
+    private val messagesPreference: Preference?
+        get() {
+            return findPreference("messages")
         }
 
     companion object {

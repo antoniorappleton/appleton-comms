@@ -7,6 +7,8 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
+import android.os.Binder
+import android.os.Process
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 
@@ -26,6 +28,17 @@ class SettingsProvider : ContentProvider() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
+    // The provider is exported only for testing over adb (extras/Testing/Enable-All-Settings).
+    // Other apps on the phone must not read or change the settings (e.g. turn on text messages).
+    private fun enforceTrustedCaller() {
+        val callingUid = Binder.getCallingUid()
+        val shellUid = 2000
+        val rootUid = 0
+        if (callingUid != Process.myUid() && callingUid != shellUid && callingUid != rootUid) {
+            throw SecurityException("Settings are not accessible to uid $callingUid")
+        }
+    }
+
     override fun onCreate(): Boolean {
         context?.let {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(it)
@@ -34,6 +47,7 @@ class SettingsProvider : ContentProvider() {
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri {
+        enforceTrustedCaller()
         when (uriMatcher.match(uri)) {
             PREFS -> {
                 values?.let {
@@ -65,6 +79,7 @@ class SettingsProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor {
+        enforceTrustedCaller()
         when (uriMatcher.match(uri)) {
             PREFS -> {
                 val cursor = MatrixCursor(arrayOf(PREFS_KEY, PREFS_VALUE))
@@ -84,6 +99,7 @@ class SettingsProvider : ContentProvider() {
         selection: String?,
         selectionArgs: Array<out String>?
     ): Int {
+        enforceTrustedCaller()
         when (uriMatcher.match(uri)) {
             PREFS -> {
                 var updatedRows = 0
@@ -104,6 +120,7 @@ class SettingsProvider : ContentProvider() {
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
+        enforceTrustedCaller()
         when (uriMatcher.match(uri)) {
             PREFS -> {
                 var deletedRows = 0
@@ -126,6 +143,7 @@ class SettingsProvider : ContentProvider() {
     }
 
     override fun getType(uri: Uri): String {
+        enforceTrustedCaller()
         return when (uriMatcher.match(uri)) {
             PREFS -> "vnd.android.cursor.dir/vnd.$AUTHORITY.prefs"
             else -> throw IllegalArgumentException("Unsupported URI: $uri")

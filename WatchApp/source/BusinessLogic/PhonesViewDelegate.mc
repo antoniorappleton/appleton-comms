@@ -29,7 +29,7 @@ class ViewDelegate extends WatchUi.Menu2InputDelegate {
         if (preprocessSpecialPhone(phone)) {
             return;
         }
-        Req.scheduleCall(phone);
+        Messaging.openContactActionsView(phone);
     }
 
     function onBack() {

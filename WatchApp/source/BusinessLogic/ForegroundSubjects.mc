@@ -10,7 +10,8 @@ const foregroundSubjectsEnabled = false;
 (:background, :glance, :foregroundSubjects)
 const foregroundOnlySubjects as String =
     phonesSubject +
-    recentsSubject;
+    recentsSubject +
+    quickMessagesSubject;
 
 (:background, :glance, :noForegroundSubjects)
 const foregroundOnlySubjects as Lang.String = "";

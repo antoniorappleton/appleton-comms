@@ -17,7 +17,7 @@ const readinessInfoInAllSubjects = readinessInfoSubject;
 const readinessInfoInAllSubjects = "";
 
 (:background)
-const allSubjects = appConfigSubject + phoneStateSubject + phonesSubject + recentsSubject + audioStateSubject + readinessInfoInAllSubjects + companionInfoInAllSubjects;
+const allSubjects = appConfigSubject + phoneStateSubject + phonesSubject + recentsSubject + audioStateSubject + readinessInfoInAllSubjects + companionInfoInAllSubjects + quickMessagesSubject;
 
 (:background, :glance, :typecheck([disableBackgroundCheck, disableGlanceCheck]))
 function requestSubjects(subjects as Lang.String) as Void {

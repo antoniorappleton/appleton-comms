@@ -13,7 +13,8 @@ const subjectsForStartingTemporalBroadcasting =
     recentsSubject +
     audioStateSubject +
     Req.companionInfoInAllSubjects +
-    Req.readinessInfoInAllSubjects;
+    Req.readinessInfoInAllSubjects +
+    quickMessagesSubject;
 
 (:background, :glance)
 function startTemporalSubjectsBroadcasting() as Void {

@@ -33,6 +33,39 @@ fun starredContactsAreOn(context: Context): Boolean {
     return sharedPreferences.getBoolean("starred_contacts", false)
 }
 
+fun messagesAreOn(context: Context): Boolean {
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    return sharedPreferences.getBoolean("messages", false)
+}
+
+const val quickMessagesPreferenceKey = "quick_messages"
+const val quickMessagesLimit = 12
+const val quickMessageMaxLength = 160
+
+val defaultQuickMessages = listOf(
+    "Estou a caminho.",
+    "Já te ligo.",
+    "Estou ocupado, falamos depois.",
+    "Chego em 10 minutos.",
+    "Está tudo bem.",
+    "Liga-me quando puderes."
+)
+
+fun quickMessagesText(context: Context): String {
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    return sharedPreferences.getString(quickMessagesPreferenceKey, null)
+        ?: defaultQuickMessages.joinToString("\n")
+}
+
+// One message per line; blank lines are ignored.
+fun quickMessages(context: Context): List<String> {
+    return quickMessagesText(context)
+        .lines()
+        .map { it.trim().take(quickMessageMaxLength) }
+        .filter { it.isNotEmpty() }
+        .take(quickMessagesLimit)
+}
+
 fun isInDebugMode(context: Context): Boolean {
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     return sharedPreferences.getBoolean("debug", false)

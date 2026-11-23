@@ -9,6 +9,12 @@ data class CommonRequest(
 )
 
 @Serializable
+data class SendSmsArgs(
+    @SerialName("n") val number: String,
+    @SerialName("t") val text: String
+)
+
+@Serializable
 data class CommonRequestV1(
     val cmd: String
 )

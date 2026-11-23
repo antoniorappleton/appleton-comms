@@ -6,7 +6,7 @@ import com.gentin.connectiq.handsfree.helpers.isRunningInEmulator
 
 val simApp = IQApp("")
 private val prodApp = IQApp("76526066-d191-46f4-9cfb-bbf9ed955b23", "Handsfree", 0)
-private val betaApp = IQApp("b4080496-3ac4-4c2e-91d4-1edd4b41ddcd", "Handsfree-B", 0)
+private val betaApp = IQApp("15e9d7bf-a94e-4e86-adf4-92adf1b3e651", "Appleton Comms", 0)
 private val prodWidget = IQApp("4241a52e-81db-4356-ac43-c8dfeb7d0be0", "Handsfree", 0)
 private val betaWidget = IQApp("cdc225d9-bc88-4d9e-a8a6-ce7dffdd0714", "Handsfree-B", 0)
 
@@ -24,14 +24,16 @@ fun defaultApp(context: Context): IQApp {
     return if (isRunningInEmulator(context)) {
         simApp
     } else {
-        prodApp
+        betaApp
     }
 }
 
 fun watchApps(context: Context) = if (isRunningInEmulator(context)) {
     listOf(simApp)
 } else {
-    listOf(prodApp, betaApp, prodWidget, betaWidget)
+    // Only the Appleton Comms watch app is trusted: the other IDs belong to the upstream
+    // Handsfree developer and must not be able to drive calls or text messages here.
+    listOf(betaApp)
 }
 
 fun appLogName(app: IQApp): String {
