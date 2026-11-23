@@ -59,6 +59,8 @@ import com.gentin.connectiq.handsfree.impl.readinessInfoPojo
 import com.gentin.connectiq.handsfree.impl.quickMessagesPojo
 import com.gentin.connectiq.handsfree.impl.recentsPojo
 import com.gentin.connectiq.handsfree.impl.sendSmsFromWatch
+import com.gentin.connectiq.handsfree.impl.showSmsFailedNotification
+import com.gentin.connectiq.handsfree.R
 import com.gentin.connectiq.handsfree.impl.strippedVersionedPojo
 import com.gentin.connectiq.handsfree.impl.subjectQueryName
 import com.gentin.connectiq.handsfree.impl.subjectQueryVersion
@@ -257,10 +259,23 @@ class DefaultServiceLocator(
                 Log.d(TAG, "Pong: $source")
                 showPongNotification(this, source)
             },
-            sendSmsImp = { _, phoneNumber, text ->
+            sendSmsImp = { _, phoneNumber, text, quickIndex ->
                 val allowedNumbers = availableContacts().contacts.map { it.number } +
                     recents().list.map { it.number }
-                sendSmsFromWatch(this, phoneNumber, text, allowedNumbers)
+                val fullText = if (quickIndex == null) {
+                    text
+                } else {
+                    // Quick messages are shown on the watch without emojis: send the original,
+                    // but only if it is still the message the watch showed.
+                    quickMessages(this).getOrNull(quickIndex)
+                        ?.takeIf { quickMessageForWatch(it) == text }
+                }
+                if (fullText == null) {
+                    Log.d(TAG, "quickMessageMismatch: $quickIndex")
+                    showSmsFailedNotification(this, getString(R.string.sms_failed_quick_message_changed))
+                } else {
+                    sendSmsFromWatch(this, phoneNumber, fullText, allowedNumbers)
+                }
             }
         )
     }
@@ -382,7 +397,7 @@ class DefaultServiceLocator(
 
                 quickMessagesSubject -> {
                     tracingElapsed(TAG, "quickMessages") {
-                        accountPojo(quickMessagesPojo(quickMessages(context = this)))
+                        accountPojo(quickMessagesPojo(quickMessages(context = this).map { quickMessageForWatch(it) }))
                     }
                 }
 

@@ -79,7 +79,7 @@
 
         <provider
             android:name=".contentproviders.SettingsProvider"
-            android:authorities="com.gentin.connectiq.handsfree.contentproviders.SettingsProvider"
+            android:authorities="${applicationId}.settings"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
     </application>

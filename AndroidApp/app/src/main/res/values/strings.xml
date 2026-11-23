@@ -265,7 +265,7 @@ To fix it:
     <string name="settings_messages_on">"Text messages can be sent from the watch."</string>
     <string name="settings_messages_off">"Sending text messages from the watch is off."</string>
     <string name="settings_quick_messages">"Quick messages"</string>
-    <string name="settings_quick_messages_dialog">"One message per line, up to 12. They are offered on the watch when you choose a contact."</string>
+    <string name="settings_quick_messages_dialog">"One message per line, up to 20. Emojis are sent in the SMS; the watch shows them as short text, e.g. (carro) or &lt;3."</string>
     <string name="settings_quick_messages_empty">"No quick messages. You can still write a message on the watch."</string>
     <string name="onboarding_messages">"# Send text messages
 
@@ -282,6 +282,7 @@ Without the permission, the messages can't be sent.
     <string name="sms_failed_disabled">"Text messages are off. Turn on Messages → Text messages in Appleton Comms."</string>
     <string name="sms_failed_no_permission">"Appleton Comms has no permission to send SMS. Open Messages → Text messages in Appleton Comms to grant it."</string>
     <string name="sms_failed_error">"The phone could not send the text message."</string>
+    <string name="sms_failed_quick_message_changed">"The quick messages changed on the phone. Open the app on the watch again and pick the message once more."</string>
     <string name="sms_failed_too_long">"The message is too long (more than 480 characters)."</string>
     <string name="sms_failed_unknown_number">"For your safety, messages from the watch can only be sent to your starred contacts or recent calls."</string>
     <string name="sms_failed_rate_limit">"Too many messages from the watch in a short time. Wait a few minutes and try again."</string>

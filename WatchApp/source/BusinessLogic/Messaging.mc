@@ -7,7 +7,7 @@ const L_MESSAGING as LogComponent = "messaging";
 
 const QuickMessages_valueKey = quickMessagesSubject + valueKeySuffix;
 const QuickMessagesField_list = "m";
-const quickMessagesMaxCount = 12;
+const quickMessagesMaxCount = 20;
 const quickMessageMaxLength = 160;
 
 // Contact actions (call, quick message, write message), quick message list,
@@ -66,12 +66,13 @@ function preflightMessages() as Lang.Boolean {
 }
 
 // Shows the confirmation screen; GPS there sends the message.
-function confirmAndSend(phone as Phone, text as Lang.String) as Void {
-    VT.pushView(V_confirmMessage, new ConfirmMessageView(phone, text), new ConfirmMessageDelegate(phone, text), WatchUi.SLIDE_LEFT);
+// [quickIndex] identifies a quick message: the phone then sends its full text (with emojis).
+function confirmAndSend(phone as Phone, text as Lang.String, quickIndex as Lang.Number or Null) as Void {
+    VT.pushView(V_confirmMessage, new ConfirmMessageView(phone, text), new ConfirmMessageDelegate(phone, text, quickIndex), WatchUi.SLIDE_LEFT);
 }
 
 // Leaves the message screens for the list the contact came from, shows the status screen and sends.
-function sendMessage(phone as Phone, text as Lang.String) as Void {
+function sendMessage(phone as Phone, text as Lang.String, quickIndex as Lang.Number or Null) as Void {
     var statusView = new MessageStatusView();
     var parentTag = returnViewTag;
     if (VT.viewStackEntryWithTag(parentTag) == null) {
@@ -89,7 +90,10 @@ function sendMessage(phone as Phone, text as Lang.String) as Void {
         cmdK => Cmd_sendSms,
         SmsArgsK_number => number,
         SmsArgsK_text => text
-    };
+    } as Lang.Dictionary<Communications.TransmitKeyType, Communications.TransmitType>;
+    if (quickIndex != null) {
+        msg[SmsArgsK_quickIndex] = quickIndex;
+    }
     Req.transmitWithRetry("sms", msg, new SendMessageListener(statusView));
 }
 
@@ -189,7 +193,7 @@ class QuickMessagesDelegate extends WatchUi.Menu2InputDelegate {
         if (index >= messages.size()) {
             return;
         }
-        confirmAndSend(phone, messages[index]);
+        confirmAndSend(phone, messages[index], index);
     }
 
     function onBack() as Void {

@@ -142,7 +142,7 @@ class KeyboardView extends WatchUi.View {
             buzz();
             return;
         }
-        confirmAndSend(phone, message);
+        confirmAndSend(phone, message, null);
     }
 
     // Upper case at the start and after ". ", "? " or "! ".

@@ -57,15 +57,17 @@ class ConfirmMessageView extends WatchUi.View {
 class ConfirmMessageDelegate extends WatchUi.BehaviorDelegate {
     private var phone as Phone;
     private var text as Lang.String;
+    private var quickIndex as Lang.Number or Null;
 
-    function initialize(phone as Phone, text as Lang.String) {
+    function initialize(phone as Phone, text as Lang.String, quickIndex as Lang.Number or Null) {
         BehaviorDelegate.initialize();
         self.phone = phone;
         self.text = text;
+        self.quickIndex = quickIndex;
     }
 
     function onSelect() as Lang.Boolean {
-        sendMessage(phone, text);
+        sendMessage(phone, text, quickIndex);
         return true;
     }
 

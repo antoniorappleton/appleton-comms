@@ -35,7 +35,7 @@ class IncomingMessageDispatcher(
     private val setAudioVolumeImp: (RelVolume) -> Unit,
     private val muteImp: (Boolean) -> Unit,
     private val pongImp: (source: IncomingMessageSource) -> Unit,
-    private val sendSmsImp: (source: IncomingMessageSource, phoneNumber: String, text: String) -> Unit
+    private val sendSmsImp: (source: IncomingMessageSource, phoneNumber: String, text: String, quickIndex: Int?) -> Unit
 ) {
     fun handleMessage(message: Any, source: IncomingMessageSource) {
         val pojo = message as Map<*, *>
@@ -129,7 +129,7 @@ class IncomingMessageDispatcher(
             sendSmsInCmd -> {
                 val args = json.decodeFromString<SendSmsArgs>(string)
                 Log.d(TAG, "sendSmsRequest: length: ${args.text.length}")
-                sendSmsImp(source, args.number, args.text)
+                sendSmsImp(source, args.number, args.text, args.quickIndex)
             }
 
             else -> {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Release hardening: the app talks to the watch over Bluetooth (via Garmin Connect) and needs
+     no network access. INTERNET is only pulled in by the Doki help library ("Don't kill my app"
+     tips, loaded from the web), so it is removed from release builds. Debug builds keep it for
+     the Connect IQ simulator. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:node="remove" />
+</manifest>

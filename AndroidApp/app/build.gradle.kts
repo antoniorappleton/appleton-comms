@@ -26,7 +26,8 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.gentin.connectiq.handsfree"
+        // Own application ID: Appleton Comms installs alongside (and is not mistaken for) Handsfree.
+        applicationId = "com.appleton.comms"
 
         minSdk = 28
         //noinspection OldTargetApi
@@ -50,8 +51,27 @@ android {
         localeFilters += listOf("en", "ru")
     }
 
+    // Release signing with the owner's key, read from keystore.properties (never committed).
+    val keystoreProperties = Properties()
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+    }
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         getByName("release") {
+            signingConfig = signingConfigs.findByName("release")
+            isDebuggable = false
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"

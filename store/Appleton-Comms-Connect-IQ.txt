@@ -43,7 +43,9 @@ Requisitos:
 
 Limitações conhecidas:
 - Até 20 contactos favoritos e até 5 chamadas recentes no relógio.
-- Até 12 mensagens rápidas, com um máximo de 160 caracteres cada.
+- Até 20 mensagens rápidas, com um máximo de 160 caracteres cada.
+- Os emojis das mensagens rápidas seguem na SMS; o relógio mostra-os como
+  texto curto, por exemplo (carro) ou <3.
 - O teclado do relógio não tem letras acentuadas. As mensagens rápidas
   podem tê-las.
 - "SMS enviada" no relógio significa que o pedido chegou ao telemóvel.
@@ -98,7 +100,8 @@ text. Up to 20 favourite contacts.
       - Messages > Text messages (envio de SMS)
     Aceite as permissões que a app pedir.
  3. Em Messages > Quick messages, escreva as suas mensagens rápidas,
-    uma por linha (até 12).
+    uma por linha (até 20). Pode usar emojis: seguem na SMS, e no relógio
+    aparecem como texto curto, por exemplo (carro) ou <3.
  4. Na app Contactos do telemóvel, marque com estrela os contactos que quer
     ver no relógio.
  5. Confirme que o relógio aparece em Devices com o visto verde.

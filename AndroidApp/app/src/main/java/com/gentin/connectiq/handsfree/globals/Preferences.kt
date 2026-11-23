@@ -39,16 +39,30 @@ fun messagesAreOn(context: Context): Boolean {
 }
 
 const val quickMessagesPreferenceKey = "quick_messages"
-const val quickMessagesLimit = 12
+const val quickMessagesLimit = 20
 const val quickMessageMaxLength = 160
 
 val defaultQuickMessages = listOf(
-    "Estou a caminho.",
-    "Já te ligo.",
-    "Estou ocupado, falamos depois.",
-    "Chego em 10 minutos.",
-    "Está tudo bem.",
-    "Liga-me quando puderes."
+    "Estou a caminho 🚗",
+    "Já te ligo 📞",
+    "Estou numa reunião, falamos depois.",
+    "Chego em 5 minutos ⏰",
+    "Chego em 10 minutos ⏰",
+    "Vou atrasar-me um pouco, desculpa 😅",
+    "Está tudo bem 👍",
+    "Combinado 👍",
+    "Sim ✅",
+    "Não, obrigado.",
+    "Obrigado! 🙏",
+    "Liga-me quando puderes 📞",
+    "Estou a conduzir, ligo-te depois 🚗",
+    "Estou a treinar 💪",
+    "Já cheguei 🏠",
+    "Onde estás? 📍",
+    "Bom dia! ☀️",
+    "Beijinhos 😘",
+    "Amo-te ❤️",
+    "Preciso de ajuda, liga-me já 🆘"
 )
 
 fun quickMessagesText(context: Context): String {
@@ -61,7 +75,7 @@ fun quickMessagesText(context: Context): String {
 fun quickMessages(context: Context): List<String> {
     return quickMessagesText(context)
         .lines()
-        .map { it.trim().take(quickMessageMaxLength) }
+        .map { takeCodePoints(it.trim(), quickMessageMaxLength) }
         .filter { it.isNotEmpty() }
         .take(quickMessagesLimit)
 }

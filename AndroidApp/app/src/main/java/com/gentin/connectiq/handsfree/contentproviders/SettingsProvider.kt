@@ -11,12 +11,13 @@ import android.os.Binder
 import android.os.Process
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import com.gentin.connectiq.handsfree.BuildConfig
 
 class SettingsProvider : ContentProvider() {
 
     companion object {
         @Suppress("SpellCheckingInspection")
-        private const val AUTHORITY = "com.gentin.connectiq.handsfree.contentproviders.SettingsProvider"
+        private const val AUTHORITY = BuildConfig.APPLICATION_ID + ".settings"
         private const val PREFS_KEY = "key"
         private const val PREFS_VALUE = "value"
         private const val PREFS = 1
