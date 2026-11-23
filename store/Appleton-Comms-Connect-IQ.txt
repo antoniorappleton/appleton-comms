@@ -25,6 +25,7 @@ Deixe o telemóvel no bolso. Com a Appleton Comms, o relógio Garmin passa a ser
 o comando do seu telemóvel Android para chamadas e mensagens:
 
 - Ligar para os seus contactos favoritos (até 20) e para as chamadas recentes.
+- Pesquisar qualquer contacto da agenda do telemóvel, a partir do relógio.
 - Atender, rejeitar e terminar chamadas no relógio.
 - Enviar SMS com um clique: escolha uma das suas mensagens rápidas
   (por exemplo "Estou a caminho." ou "Já te ligo.").
@@ -43,6 +44,7 @@ Requisitos:
 
 Limitações conhecidas:
 - Até 20 contactos favoritos e até 5 chamadas recentes no relógio.
+- A pesquisa mostra até 10 resultados e precisa do telemóvel por perto.
 - Até 20 mensagens rápidas, com um máximo de 160 caracteres cada.
 - Os emojis das mensagens rápidas seguem na SMS; o relógio mostra-os como
   texto curto, por exemplo (carro) ou <3.
@@ -60,6 +62,7 @@ Leave your phone in your pocket. Appleton Comms turns your Garmin watch into a
 remote for calls and text messages on your Android phone:
 
 - Call your favourite contacts (up to 20) and recent calls.
+- Search any contact in your phone's address book from the watch.
 - Accept, decline and hang up calls on the watch.
 - Send an SMS in one click: pick one of your quick messages.
 - Write a free-text message on the watch with a button-friendly keyboard.
@@ -78,10 +81,10 @@ https://github.com/grigorye/Handsfree
 
 4. NOVIDADES DESTA VERSÃO (campo "What's new")
 -----------------------------------------------
-PT: Novo: enviar SMS a partir do relógio, com mensagens rápidas ou escritas no
-relógio. Até 20 contactos favoritos.
-EN: New: send text messages from the watch, using quick messages or your own
-text. Up to 20 favourite contacts.
+PT: Novo: Pesquisar, no topo da lista, encontra qualquer contacto da agenda do
+telemóvel para ligar ou enviar SMS.
+EN: New: Search, at the top of the list, finds any contact in your phone's
+address book to call or text.
 
 
 5. MANUAL DE UTILIZAÇÃO
@@ -138,7 +141,19 @@ text. Up to 20 favourite contacts.
  3. Escolha Concluir e, no ecrã "Enviar a <nome>?", carregue em GPS.
     Aparece "SMS enviada" e o relógio volta à lista de contactos.
 
-5.6 Problemas frequentes
+5.6 Pesquisar um contacto
+
+ 1. Abra a app. Pesquisar é o primeiro item da lista (carregue em UP a
+    partir do primeiro favorito).
+ 2. Escreva parte do nome (ou do número) com o teclado e escolha Concluir.
+ 3. O telemóvel procura em todos os contactos e mostra até 10 resultados.
+    Um contacto com vários números aparece uma vez por número, com o tipo
+    entre parênteses, por exemplo "Ana (Casa)".
+ 4. Escolha um resultado: Ligar, Mensagem rápida ou Escrever mensagem.
+ 5. "Sem acesso": ligue Contacts na app Android, em Controls.
+    "Sem resposta": o telemóvel não respondeu. Carregue em GPS para repetir.
+
+5.7 Problemas frequentes
 
  - "Call control not enabled" ou "Text messages not enabled": ligue a
    opção correspondente na app Android, em Controls.

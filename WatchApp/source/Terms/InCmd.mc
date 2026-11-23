@@ -11,3 +11,10 @@ const InCmd_openMeCompleted = "c";
 const OpenMeCompletedArgs_succeeded = "e";
 (:background)
 const OpenMeCompletedArgs_messageForWakingUp = "m";
+
+(:background)
+const InCmd_searchResults = "r";
+
+const SearchResultsArgs_query = "q";
+const SearchResultsArgs_list = "l";
+const SearchResultsArgs_error = "e";

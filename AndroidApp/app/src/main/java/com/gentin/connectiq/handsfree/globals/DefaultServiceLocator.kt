@@ -86,6 +86,8 @@ const val recentsLimitLowMemory = 5
 const val recentsLimitFullFeatured = 10
 const val phonesLimitLowMemory = 20
 const val phonesLimitFullFeatured = 20
+const val searchResultsLimit = 10
+const val searchQueryMaxLength = 30
 
 class DefaultServiceLocator(
     base: Context?,
@@ -259,9 +261,36 @@ class DefaultServiceLocator(
                 Log.d(TAG, "Pong: $source")
                 showPongNotification(this, source)
             },
+            searchContactsImp = { source, query ->
+                val destination = OutgoingMessageDestination(source.device, source.app)
+                val trimmedQuery = query.trim()
+                val contacts = if (!starredContactsAreOn(this) || !hasContactsPermission()) {
+                    null
+                } else if (trimmedQuery.isEmpty() || trimmedQuery.length > searchQueryMaxLength) {
+                    emptyList()
+                } else {
+                    try {
+                        contactsRepository.searchContacts(trimmedQuery, searchResultsLimit)
+                    } catch (e: RuntimeException) {
+                        Log.e(TAG, "contactsSearchFailed: $e")
+                        null
+                    }
+                }
+                Log.d(TAG, "contactsSearchResults: ${contacts?.size}")
+                outgoingMessageDispatcher.sendSearchResults(destination, query, contacts)
+            },
             sendSmsImp = { _, phoneNumber, text, quickIndex ->
+                // Favourites, recents, and any number in the phone's contacts (found by searching on the watch).
+                val inContacts = starredContactsAreOn(this) && hasContactsPermission() &&
+                    try {
+                        contactsRepository.displayNamesForPhoneNumber(phoneNumber).isNotEmpty()
+                    } catch (e: RuntimeException) {
+                        Log.e(TAG, "contactLookupFailed: $e")
+                        false
+                    }
                 val allowedNumbers = availableContacts().contacts.map { it.number } +
-                    recents().list.map { it.number }
+                    recents().list.map { it.number } +
+                    (if (inContacts) listOf(phoneNumber) else emptyList())
                 val fullText = if (quickIndex == null) {
                     text
                 } else {

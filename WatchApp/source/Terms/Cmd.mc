@@ -27,3 +27,6 @@ const SmsArgsK_quickIndex = "q";
 
 (:background)
 const OpenMeArgsK_messageForWakingUp = "m";
+
+const Cmd_searchContacts = "f";
+const SearchArgsK_query = "q";

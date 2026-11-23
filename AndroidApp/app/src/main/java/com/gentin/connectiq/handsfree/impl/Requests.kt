@@ -17,6 +17,11 @@ data class SendSmsArgs(
 )
 
 @Serializable
+data class SearchContactsArgs(
+    @SerialName("q") val query: String
+)
+
+@Serializable
 data class CommonRequestV1(
     val cmd: String
 )

@@ -66,13 +66,25 @@ function handleRemoteMessageData(data as Lang.Object) as Void {
             openAppFailed();
             break;
         case InCmd_openMeCompleted:
-            handleOpenMeCompleted(args);            
+            handleOpenMeCompleted(args);
+            break;
+        case InCmd_searchResults:
+            handleSearchResultsMsg(args);
             break;
         default:
             if (debug) { _3(LX_REMOTE_MSG, "unknownCmd", cmd); }
             break;
     }
     if (minDebug) { _2(LX_REMOTE_MSG, "msg.committed"); }
+}
+
+// Search results only matter to the app on screen.
+(:background, :typecheck(disableBackgroundCheck))
+function handleSearchResultsMsg(args as Lang.Object or Null) as Void {
+    if (runningInBackground) {
+        return;
+    }
+    Messaging.handleSearchResults(args);
 }
 
 typedef SubjectName as Lang.String;

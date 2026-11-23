@@ -13,6 +13,7 @@ import com.gentin.connectiq.handsfree.terms.openAppInStoreInCmd
 import com.gentin.connectiq.handsfree.terms.openMeInCmd
 import com.gentin.connectiq.handsfree.terms.pongInCmd
 import com.gentin.connectiq.handsfree.terms.queryInCmd
+import com.gentin.connectiq.handsfree.terms.searchContactsInCmd
 import com.gentin.connectiq.handsfree.terms.sendSmsInCmd
 import com.gentin.connectiq.handsfree.terms.setAudioVolumeInCmd
 import com.gentin.connectiq.handsfree.terms.syncMeV1InCmd
@@ -35,7 +36,8 @@ class IncomingMessageDispatcher(
     private val setAudioVolumeImp: (RelVolume) -> Unit,
     private val muteImp: (Boolean) -> Unit,
     private val pongImp: (source: IncomingMessageSource) -> Unit,
-    private val sendSmsImp: (source: IncomingMessageSource, phoneNumber: String, text: String, quickIndex: Int?) -> Unit
+    private val sendSmsImp: (source: IncomingMessageSource, phoneNumber: String, text: String, quickIndex: Int?) -> Unit,
+    private val searchContactsImp: (source: IncomingMessageSource, query: String) -> Unit
 ) {
     fun handleMessage(message: Any, source: IncomingMessageSource) {
         val pojo = message as Map<*, *>
@@ -132,6 +134,12 @@ class IncomingMessageDispatcher(
                 sendSmsImp(source, args.number, args.text, args.quickIndex)
             }
 
+            searchContactsInCmd -> {
+                val args = json.decodeFromString<SearchContactsArgs>(string)
+                Log.d(TAG, "searchContactsRequest: length: ${args.query.length}")
+                searchContactsImp(source, args.query)
+            }
+
             else -> {
                 Log.e(TAG, "unknownMsg: $string")
             }
@@ -151,8 +159,9 @@ class IncomingMessageDispatcher(
     }
 }
 
-// Text messages carry personal data (number and text): keep them out of the logs.
+// Text messages and contact searches carry personal data: keep them out of the logs.
 fun redactedForLog(message: Any): Any {
     val pojo = message as? Map<*, *> ?: return message
-    return if (pojo["c"] == sendSmsInCmd) "{c=$sendSmsInCmd, <redacted>}" else message
+    val cmd = pojo["c"]
+    return if (cmd == sendSmsInCmd || cmd == searchContactsInCmd) "{c=$cmd, <redacted>}" else message
 }

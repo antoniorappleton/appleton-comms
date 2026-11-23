@@ -26,7 +26,8 @@ class KeyboardView extends WatchUi.View {
     const G_DELETE = 9;
     const G_DONE = 10;
 
-    const MAX_LEN = 160;   // one SMS (GSM-7)
+    const MESSAGE_MAX_LEN = 160; // one SMS (GSM-7)
+    const SEARCH_MAX_LEN = 30;
     const TAIL_LEN = 14;   // characters visible at the top
 
     enum {
@@ -35,15 +36,21 @@ class KeyboardView extends WatchUi.View {
         MODE_DISCARD
     }
 
-    private var phone as Phone;
+    // The recipient of the message, or null when the keyboard is used to search contacts.
+    private var phone as Phone or Null;
+    private var maxLen as Lang.Number;
     private var text as Lang.String = "";
     private var mode as Lang.Number = MODE_GROUPS;
     private var group as Lang.Number = 0;
     private var char as Lang.Number = 0;
 
-    function initialize(phone as Phone) {
+    function initialize(phone as Phone or Null) {
         View.initialize();
         self.phone = phone;
+        maxLen = phone == null ? SEARCH_MAX_LEN : MESSAGE_MAX_LEN;
+        if (phone == null) {
+            group = G_FIRST_LETTER; // searching starts with a letter, not a space
+        }
     }
 
     // MARK: Actions (from KeyboardDelegate)
@@ -116,7 +123,7 @@ class KeyboardView extends WatchUi.View {
         if (ch.equals(" ") && (n == 0 || (text.substring(n - 1, n) as Lang.String).equals(" "))) {
             return;
         }
-        if (n >= MAX_LEN) {
+        if (n >= maxLen) {
             buzz();
             return;
         }
@@ -142,7 +149,12 @@ class KeyboardView extends WatchUi.View {
             buzz();
             return;
         }
-        confirmAndSend(phone, message, null);
+        var recipient = phone;
+        if (recipient == null) {
+            startSearch(message);
+        } else {
+            confirmAndSend(recipient, message, null);
+        }
     }
 
     // Upper case at the start and after ". ", "? " or "! ".
@@ -223,9 +235,11 @@ class KeyboardView extends WatchUi.View {
             return;
         }
 
-        // Recipient, left of the sub-window.
+        // Recipient (or "Pesquisar"), left of the sub-window.
+        var recipient = phone;
+        var title = recipient == null ? loadIfResource(Rez.Strings.searchContacts) : getPhoneName(recipient);
         dc.drawText(w * 58 / 176, y(40, h), Graphics.FONT_XTINY,
-            fitRight(dc, getPhoneName(phone), Graphics.FONT_XTINY, w * 90 / 176), center);
+            fitRight(dc, title, Graphics.FONT_XTINY, w * 90 / 176), center);
 
         // Top: end of the text and cursor.
         var n = text.length();
@@ -248,7 +262,7 @@ class KeyboardView extends WatchUi.View {
         dc.drawText(cx, y(146, h), Graphics.FONT_XTINY, itemText(wrap(i + 1, count)), center);
 
         // Footer: counter.
-        dc.drawText(cx, y(164, h), Graphics.FONT_XTINY, n.toString() + "/" + MAX_LEN.toString(), center);
+        dc.drawText(cx, y(164, h), Graphics.FONT_XTINY, n.toString() + "/" + maxLen.toString(), center);
     }
 
     private function y(value as Lang.Number, h as Lang.Number) as Lang.Number {
