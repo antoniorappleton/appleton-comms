@@ -14,3 +14,4 @@ const V_keyboard = "k";
 const V_confirmMessage = "y";
 const V_messageStatus = "z";
 const V_searchResults = "f";
+const V_location = "l";
