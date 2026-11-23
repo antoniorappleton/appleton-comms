@@ -1,0 +1,171 @@
+APPLETON COMMS - TEXTOS PARA A LOJA CONNECT IQ
+===============================================
+
+Este ficheiro tem os textos para colar nos campos da loja Connect IQ
+(apps.garmin.com/developer), um manual de utilização simples e a lista
+das imagens a carregar.
+
+
+1. NOME DA APP
+--------------
+Appleton Comms
+
+
+2. RESUMO (uma linha)
+---------------------
+ text your favourite contacts from your watch, through your Android phone.
+PT: Ligue e envie SMS aos seus contactos favoritos a partir do relógio, através do seu telemóvel Android.
+EN: Call and
+
+3. DESCRIÇÃO (campo "Description")
+----------------------------------
+[Português]
+
+Deixe o telemóvel no bolso. Com a Appleton Comms, o relógio Garmin passa a ser
+o comando do seu telemóvel Android para chamadas e mensagens:
+
+- Ligar para os seus contactos favoritos (até 20) e para as chamadas recentes.
+- Atender, rejeitar e terminar chamadas no relógio.
+- Enviar SMS com um clique: escolha uma das suas mensagens rápidas
+  (por exemplo "Estou a caminho." ou "Já te ligo.").
+- Escrever uma mensagem livre no relógio, com um teclado pensado para os
+  botões, com as letras agrupadas pela frequência em português.
+- Confirmação antes de enviar cada mensagem.
+
+As mensagens são enviadas pelo seu telemóvel, como uma SMS normal do seu
+número. As mensagens rápidas são definidas na app Android.
+
+Requisitos:
+- Telemóvel Android com a app companheira Appleton Comms instalada
+  (o iPhone não é suportado).
+- App Garmin Connect no telemóvel e relógio emparelhado por Bluetooth.
+- Não precisa de ligação à Internet.
+
+Limitações conhecidas:
+- Até 20 contactos favoritos e até 5 chamadas recentes no relógio.
+- Até 12 mensagens rápidas, com um máximo de 160 caracteres cada.
+- O teclado do relógio não tem letras acentuadas. As mensagens rápidas
+  podem tê-las.
+- "SMS enviada" no relógio significa que o pedido chegou ao telemóvel.
+  Se o telemóvel não a conseguir enviar, mostra um aviso no telemóvel.
+
+Baseado no Handsfree de Grigorii Entin (licença MIT):
+https://github.com/grigorye/Handsfree
+
+[English]
+
+Leave your phone in your pocket. Appleton Comms turns your Garmin watch into a
+remote for calls and text messages on your Android phone:
+
+- Call your favourite contacts (up to 20) and recent calls.
+- Accept, decline and hang up calls on the watch.
+- Send an SMS in one click: pick one of your quick messages.
+- Write a free-text message on the watch with a button-friendly keyboard.
+- Every message is confirmed before it is sent.
+
+Messages are sent by your phone, as a normal SMS from your number. Quick
+messages are set up in the Android app.
+
+Requires an Android phone with the Appleton Comms companion app, the Garmin
+Connect app and a Bluetooth connection. No Internet connection is needed.
+iPhone is not supported.
+
+Based on Handsfree by Grigorii Entin (MIT licence):
+https://github.com/grigorye/Handsfree
+
+
+4. NOVIDADES DESTA VERSÃO (campo "What's new")
+-----------------------------------------------
+PT: Novo: enviar SMS a partir do relógio, com mensagens rápidas ou escritas no
+relógio. Até 20 contactos favoritos.
+EN: New: send text messages from the watch, using quick messages or your own
+text. Up to 20 favourite contacts.
+
+
+5. MANUAL DE UTILIZAÇÃO
+-----------------------
+
+5.1 Preparar o telemóvel (uma vez)
+
+ 1. Instale a app Android Appleton Comms (ficheiro .apk).
+    O Android pode avisar que a app é de origem desconhecida.
+    Confirme a instalação.
+ 2. Abra a app e, em Controls, ative:
+      - Call control (obrigatório)
+      - Incoming calls e Outgoing calls (chamadas)
+      - Contacts (contactos favoritos)
+      - Recents (chamadas recentes)
+      - Messages > Text messages (envio de SMS)
+    Aceite as permissões que a app pedir.
+ 3. Em Messages > Quick messages, escreva as suas mensagens rápidas,
+    uma por linha (até 12).
+ 4. Na app Contactos do telemóvel, marque com estrela os contactos que quer
+    ver no relógio.
+ 5. Confirme que o relógio aparece em Devices com o visto verde.
+
+5.2 Instalar no relógio
+
+ 1. Na app Connect IQ do telemóvel, procure Appleton Comms e instale-a.
+ 2. No relógio, abra a app. Deve aparecer a lista de contactos favoritos.
+
+5.3 Fazer uma chamada
+
+ 1. Abra a app e escolha um contacto (ou Recents > uma chamada recente).
+ 2. Escolha Ligar. A chamada começa no telemóvel.
+
+5.4 Enviar uma mensagem rápida
+
+ 1. Escolha um contacto > Mensagem rápida.
+ 2. Escolha a mensagem.
+ 3. No ecrã "Enviar a <nome>?", carregue em GPS para enviar (BACK cancela).
+ 4. Aparece "SMS enviada" e o relógio volta à lista de contactos.
+
+5.5 Escrever uma mensagem
+
+ 1. Escolha um contacto > Escrever mensagem.
+ 2. Teclado:
+      - UP / DOWN: percorrer os grupos de letras
+      - GPS (START): abrir o grupo e escolher a letra
+      - BACK: voltar ao grupo ou apagar a última letra
+      - Espaco: espaço
+      - Apagar: apaga a última letra
+      - Concluir: termina e pede confirmação
+      - Manter UP (MENU): sair (pergunta se quer descartar o texto)
+    A primeira letra e a letra depois de ". ", "? " e "! " ficam em maiúscula.
+ 3. Escolha Concluir e, no ecrã "Enviar a <nome>?", carregue em GPS.
+    Aparece "SMS enviada" e o relógio volta à lista de contactos.
+
+5.6 Problemas frequentes
+
+ - "Call control not enabled" ou "Text messages not enabled": ligue a
+   opção correspondente na app Android, em Controls.
+ - "Sem mensagens" em Mensagem rápida: defina as mensagens na app Android
+   e volte a abrir a app no relógio.
+ - A lista não atualiza: no telemóvel, toque em Refresh. No relógio, feche
+   e volte a abrir a app.
+ - A mensagem não chegou: veja se o telemóvel mostrou o aviso "Message from
+   the watch not sent" e se tem rede móvel.
+
+
+6. IMAGENS PARA A LOJA
+----------------------
+Ícone da app (pasta store/):
+ - store-icon-500.png   (500x500)
+ - store-icon-1024.png  (1024x1024)
+
+Imagem de destaque (campo "Hero image", inglês):
+ - hero-1440x720.png    (1440x720)
+
+Capturas de ecrã (pasta store/screenshots/). Foram tiradas do projeto
+original num Instinct 2, que tem o mesmo ecrã do Instinct 3 Solar:
+ - instinct2-Contacts.jpg                - lista de contactos favoritos
+ - instinct2-Recents.jpg                 - chamadas recentes
+ - instinct2-Call-In-Progress.jpg        - chamada em curso
+ - instinct2-Call-In-Progress-Volume.jpg - volume durante a chamada
+ - instinct2-Glance-Idle.jpg             - vista rápida (glance)
+
+Ainda faltam capturas dos ecrãs novos: submenu do contacto, mensagens
+rápidas, teclado, confirmação e "SMS enviada". Tire-as no simulador Connect IQ (VS Code >
+Run App on Instinct 3, depois a opção de guardar o ecrã no menu File do
+simulador) ou fotografe o relógio. Nota: as capturas existentes mostram o ícone antigo
+(Handsfree) no círculo pequeno. A app já usa o ícone novo.
