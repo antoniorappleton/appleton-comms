@@ -101,7 +101,7 @@ python3 "$src_root"/Scripts/generate_lang_jungle.py \
 
 case "$type" in
 app)
-    beta_app_id="a3d8da80-e013-41f9-aca4-f66bb38fad3f"
+    beta_app_id="b4080496-3ac4-4c2e-91d4-1edd4b41ddcd"
     prod_app_id="76526066-d191-46f4-9cfb-bbf9ed955b23"
     ;;
 widget)

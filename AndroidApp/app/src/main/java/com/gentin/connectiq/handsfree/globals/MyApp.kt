@@ -6,7 +6,7 @@ import com.gentin.connectiq.handsfree.helpers.isRunningInEmulator
 
 val simApp = IQApp("")
 private val prodApp = IQApp("76526066-d191-46f4-9cfb-bbf9ed955b23", "Handsfree", 0)
-private val betaApp = IQApp("a3d8da80-e013-41f9-aca4-f66bb38fad3f", "Handsfree-B", 0)
+private val betaApp = IQApp("b4080496-3ac4-4c2e-91d4-1edd4b41ddcd", "Handsfree-B", 0)
 private val prodWidget = IQApp("4241a52e-81db-4356-ac43-c8dfeb7d0be0", "Handsfree", 0)
 private val betaWidget = IQApp("cdc225d9-bc88-4d9e-a8a6-ce7dffdd0714", "Handsfree-B", 0)
 
