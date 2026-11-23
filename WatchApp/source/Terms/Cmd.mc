@@ -20,5 +20,13 @@ const Cmd_openAppInStore = "r";
 (:background)
 const CallArgsK_number = "n";
 
+const Cmd_sendSms = "s";
+const SmsArgsK_number = "n";
+const SmsArgsK_text = "t";
+const SmsArgsK_quickIndex = "q";
+
 (:background)
 const OpenMeArgsK_messageForWakingUp = "m";
+
+const Cmd_searchContacts = "f";
+const SearchArgsK_query = "q";

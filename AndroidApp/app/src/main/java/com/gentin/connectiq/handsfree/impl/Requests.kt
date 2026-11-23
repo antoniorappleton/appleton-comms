@@ -9,6 +9,19 @@ data class CommonRequest(
 )
 
 @Serializable
+data class SendSmsArgs(
+    @SerialName("n") val number: String,
+    @SerialName("t") val text: String,
+    // Index of the quick message the watch showed as [text]; the phone sends the full message.
+    @SerialName("q") val quickIndex: Int? = null
+)
+
+@Serializable
+data class SearchContactsArgs(
+    @SerialName("q") val query: String
+)
+
+@Serializable
 data class CommonRequestV1(
     val cmd: String
 )

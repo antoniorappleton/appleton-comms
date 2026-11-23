@@ -52,6 +52,8 @@ class View extends ExtendedMenu2 {
     }
 
     private function setFromPhones(phones as Phones) as Void {
+        // Search is the first item; the focus starts on the first contact below it.
+        addItem(new WatchUi.MenuItem(formatIfResources(Rez.Strings.mainMenuItemTitleFormat, [Rez.Strings.searchContacts]), null, :search, null));
         var accessIssue = phones[PhonesField_accessIssue] as AccessIssue | Null;
         if (accessIssue != null) {
             addItem(accessIssueMenuItem(Rez.Strings.contacts, accessIssue, noPhonesMenuItemId));
@@ -90,8 +92,11 @@ class View extends ExtendedMenu2 {
             addItem(new WatchUi.MenuItem(Rez.Strings.phonesNotSelected, "", noPhonesMenuItemId, {}));
         }
 
+        if (focus == null && phonesCount > 0) {
+            focus = 0;
+        }
         if (focus != null) {
-           setFocus(focus);
+           setFocus(focus + 1); // after the search item
         }
     }
 

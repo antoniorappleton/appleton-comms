@@ -18,3 +18,6 @@ const readinessInfoSubject = "n";
 
 (:inline, :background, :glance)
 const appConfigSubject = "b";
+
+(:inline, :background, :glance)
+const quickMessagesSubject = "m";

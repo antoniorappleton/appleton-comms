@@ -24,6 +24,10 @@ import com.gentin.connectiq.handsfree.terms.phoneStateChangedV1Cmd
 import com.gentin.connectiq.handsfree.terms.phoneStateSubject
 import com.gentin.connectiq.handsfree.terms.phonesSubject
 import com.gentin.connectiq.handsfree.terms.recentsSubject
+import com.gentin.connectiq.handsfree.terms.searchErrorArg
+import com.gentin.connectiq.handsfree.terms.searchListArg
+import com.gentin.connectiq.handsfree.terms.searchQueryArg
+import com.gentin.connectiq.handsfree.terms.searchResultsCmd
 import com.gentin.connectiq.handsfree.terms.setPhonesV1Cmd
 import com.gentin.connectiq.handsfree.terms.subjectValue
 import com.gentin.connectiq.handsfree.terms.subjectVersion
@@ -112,6 +116,11 @@ interface OutgoingMessageDispatcher {
     fun sendPhoneState(destination: OutgoingMessageDestination, phoneState: PhoneState)
     fun sendAudioState(state: AudioState)
     fun sendOpenAppFailed(destination: OutgoingMessageDestination)
+    fun sendSearchResults(
+        destination: OutgoingMessageDestination,
+        query: String,
+        contacts: List<ContactData>?
+    )
     fun sendOpenMeCompleted(
         destination: OutgoingMessageDestination,
         args: OpenMeArgs,
@@ -278,6 +287,25 @@ class DefaultOutgoingMessageDispatcher(
         send(OutgoingMessage(destination, msg))
     }
 
+    // [contacts] is null when the contacts can't be searched (disabled or no permission).
+    override fun sendSearchResults(
+        destination: OutgoingMessageDestination,
+        query: String,
+        contacts: List<ContactData>?
+    ) {
+        val args = mutableMapOf<String, Any>(searchQueryArg to query)
+        if (contacts == null) {
+            args[searchErrorArg] = true
+        } else {
+            args[searchListArg] = phonesPojoV2(contacts)
+        }
+        val msg = mapOf(
+            cmdMsgField to searchResultsCmd,
+            argsMsgField to args
+        )
+        send(OutgoingMessage(destination, msg))
+    }
+
     override fun sendOpenMeCompleted(
         destination: OutgoingMessageDestination,
         args: OpenMeArgs,
@@ -413,6 +441,11 @@ fun phonesPojoV1(contacts: List<ContactData>): Any {
     return pojo
 }
 
+// Same fields as the phones subject ("i", "m", "n"), so the watch can treat results as phones.
+fun phonesPojoV2(contacts: List<ContactData>): Any {
+    return contacts.map { mapOf("i" to it.id, "m" to it.name, "n" to it.number) }
+}
+
 fun recentsPojo(recents: AvailableRecents, limit: Int?): Any {
     if (limit != null) {
         val strippedRecents = recents.copy()
@@ -428,4 +461,8 @@ fun companionInfoPojo(info: CompanionInfo): Any {
 
 fun readinessInfoPojo(info: ReadinessInfo): Any {
     return pojoMap(info)
+}
+
+fun quickMessagesPojo(messages: List<String>): Any {
+    return mapOf("m" to messages)
 }

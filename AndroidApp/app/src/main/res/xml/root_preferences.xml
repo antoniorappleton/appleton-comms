@@ -49,6 +49,21 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/settings_messages_group"
+        app:iconSpaceReserved="false">
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="messages"
+            app:summary="@string/settings_messages_off"
+            app:title="@string/settings_messages" />
+        <EditTextPreference
+            app:iconSpaceReserved="false"
+            app:key="quick_messages"
+            app:dialogMessage="@string/settings_quick_messages_dialog"
+            app:title="@string/settings_quick_messages" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/settings_extras_group"
         app:iconSpaceReserved="false">
         <Preference

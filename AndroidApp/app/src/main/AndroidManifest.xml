@@ -16,6 +16,8 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> <!-- to not be killed -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- to direct the phone application (and let it be brought to front) -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- to mute the microphone -->
+    <uses-permission android:name="android.permission.SEND_SMS"
+        tools:ignore="SmsAndCallLogPolicy" /> <!-- to send text messages written on the watch -->
     <uses-permission android:name="com.garmin.connectiq.permission.RECEIVE_BROADCASTS" /> <!-- to receive messages from the watch/GCM -->
     <uses-feature
         android:name="android.hardware.telephony"
@@ -77,7 +79,7 @@
 
         <provider
             android:name=".contentproviders.SettingsProvider"
-            android:authorities="com.gentin.connectiq.handsfree.contentproviders.SettingsProvider"
+            android:authorities="${applicationId}.settings"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
     </application>

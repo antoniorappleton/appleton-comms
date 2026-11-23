@@ -16,7 +16,7 @@ class ViewDelegate extends WatchUi.Menu2InputDelegate {
             return;
         }
         var selectedRecent = id as Recent;
-        Req.scheduleCall(phoneFromRecent(selectedRecent));
+        Messaging.openContactActionsView(phoneFromRecent(selectedRecent));
     }
 
     function onBack() {

@@ -38,6 +38,7 @@ interface ContactsRepository {
     fun unsubscribe(observer: ContentObserver)
     fun contactsData(limit: Int): List<ContactData>
     fun displayNamesForPhoneNumber(phoneNumber: String): List<String>
+    fun searchContacts(query: String, limit: Int): List<ContactData>
 }
 
 class ContactsRepositoryImpl(
@@ -179,5 +180,54 @@ class ContactsRepositoryImpl(
             close()
         }
         return displayNames
+    }
+
+    // All phone numbers of the contacts whose name (or number) matches [query], by name.
+    // A contact with several numbers is listed once per number, with the number type in the name.
+    override fun searchContacts(query: String, limit: Int): List<ContactData> {
+        val uri = Uri.withAppendedPath(Phone.CONTENT_FILTER_URI, Uri.encode(query))
+        val cursor = contentResolver.query(
+            uri,
+            arrayOf(
+                Phone.CONTACT_ID,
+                Phone.DISPLAY_NAME,
+                Phone.NUMBER,
+                Phone.NORMALIZED_NUMBER,
+                Phone.TYPE,
+                Phone.LABEL
+            ),
+            null,
+            null,
+            "${Phone.DISPLAY_NAME} COLLATE LOCALIZED ASC"
+        ) ?: return emptyList()
+
+        data class Match(val contactId: Int, val name: String, val number: String, val label: String)
+
+        val matches = ArrayList<Match>()
+        val seen = HashSet<String>()
+        cursor.use {
+            val idColumn = it.getColumnIndex(Phone.CONTACT_ID)
+            val nameColumn = it.getColumnIndex(Phone.DISPLAY_NAME)
+            val numberColumn = it.getColumnIndex(Phone.NUMBER)
+            val normalizedColumn = it.getColumnIndex(Phone.NORMALIZED_NUMBER)
+            val typeColumn = it.getColumnIndex(Phone.TYPE)
+            val labelColumn = it.getColumnIndex(Phone.LABEL)
+            while (it.moveToNext() && matches.size < limit) {
+                val contactId = it.getInt(idColumn)
+                val name = it.getString(nameColumn) ?: continue
+                val number = it.getString(normalizedColumn) ?: it.getString(numberColumn) ?: continue
+                // The same number may be stored twice (e.g. in two accounts).
+                if (!seen.add("$contactId $number")) {
+                    continue
+                }
+                val label = Phone.getTypeLabel(resources, it.getInt(typeColumn), it.getString(labelColumn))
+                matches.add(Match(contactId, name, number, "$label"))
+            }
+        }
+        val numbersPerContact = matches.groupingBy { it.contactId }.eachCount()
+        return matches.map {
+            val name = if ((numbersPerContact[it.contactId] ?: 0) > 1) "${it.name} (${it.label})" else it.name
+            ContactData(it.contactId, name, it.number)
+        }
     }
 }

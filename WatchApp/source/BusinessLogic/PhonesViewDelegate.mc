@@ -10,6 +10,10 @@ class ViewDelegate extends WatchUi.Menu2InputDelegate {
 
     function onSelect(item as WatchUi.MenuItem) as Void {
         var id = item.getId() as Lang.Object;
+        if (id == :search) {
+            Messaging.openSearch();
+            return;
+        }
         if (id == :recents) {
             Navigation.openRecentsView();
             return;
@@ -29,7 +33,7 @@ class ViewDelegate extends WatchUi.Menu2InputDelegate {
         if (preprocessSpecialPhone(phone)) {
             return;
         }
-        Req.scheduleCall(phone);
+        Messaging.openContactActionsView(phone);
     }
 
     function onBack() {

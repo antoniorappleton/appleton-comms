@@ -56,7 +56,11 @@ import com.gentin.connectiq.handsfree.impl.phoneStatePojo
 import com.gentin.connectiq.handsfree.impl.phonesPojo
 import com.gentin.connectiq.handsfree.impl.readinessInfo
 import com.gentin.connectiq.handsfree.impl.readinessInfoPojo
+import com.gentin.connectiq.handsfree.impl.quickMessagesPojo
 import com.gentin.connectiq.handsfree.impl.recentsPojo
+import com.gentin.connectiq.handsfree.impl.sendSmsFromWatch
+import com.gentin.connectiq.handsfree.impl.showSmsFailedNotification
+import com.gentin.connectiq.handsfree.R
 import com.gentin.connectiq.handsfree.impl.strippedVersionedPojo
 import com.gentin.connectiq.handsfree.impl.subjectQueryName
 import com.gentin.connectiq.handsfree.impl.subjectQueryVersion
@@ -69,6 +73,7 @@ import com.gentin.connectiq.handsfree.terms.audioStateSubject
 import com.gentin.connectiq.handsfree.terms.companionInfoSubject
 import com.gentin.connectiq.handsfree.terms.phoneStateSubject
 import com.gentin.connectiq.handsfree.terms.phonesSubject
+import com.gentin.connectiq.handsfree.terms.quickMessagesSubject
 import com.gentin.connectiq.handsfree.terms.readinessInfoSubject
 import com.gentin.connectiq.handsfree.terms.recentsSubject
 
@@ -79,8 +84,10 @@ private val contactDataCachingEnabled get() = true
 
 const val recentsLimitLowMemory = 5
 const val recentsLimitFullFeatured = 10
-const val phonesLimitLowMemory = 5
+const val phonesLimitLowMemory = 20
 const val phonesLimitFullFeatured = 20
+const val searchResultsLimit = 10
+const val searchQueryMaxLength = 30
 
 class DefaultServiceLocator(
     base: Context?,
@@ -253,6 +260,51 @@ class DefaultServiceLocator(
             pongImp = { source ->
                 Log.d(TAG, "Pong: $source")
                 showPongNotification(this, source)
+            },
+            searchContactsImp = { source, query ->
+                val destination = OutgoingMessageDestination(source.device, source.app)
+                val trimmedQuery = query.trim()
+                val contacts = if (!starredContactsAreOn(this) || !hasContactsPermission()) {
+                    null
+                } else if (trimmedQuery.isEmpty() || trimmedQuery.length > searchQueryMaxLength) {
+                    emptyList()
+                } else {
+                    try {
+                        contactsRepository.searchContacts(trimmedQuery, searchResultsLimit)
+                    } catch (e: RuntimeException) {
+                        Log.e(TAG, "contactsSearchFailed: $e")
+                        null
+                    }
+                }
+                Log.d(TAG, "contactsSearchResults: ${contacts?.size}")
+                outgoingMessageDispatcher.sendSearchResults(destination, query, contacts)
+            },
+            sendSmsImp = { _, phoneNumber, text, quickIndex ->
+                // Favourites, recents, and any number in the phone's contacts (found by searching on the watch).
+                val inContacts = starredContactsAreOn(this) && hasContactsPermission() &&
+                    try {
+                        contactsRepository.displayNamesForPhoneNumber(phoneNumber).isNotEmpty()
+                    } catch (e: RuntimeException) {
+                        Log.e(TAG, "contactLookupFailed: $e")
+                        false
+                    }
+                val allowedNumbers = availableContacts().contacts.map { it.number } +
+                    recents().list.map { it.number } +
+                    (if (inContacts) listOf(phoneNumber) else emptyList())
+                val fullText = if (quickIndex == null) {
+                    text
+                } else {
+                    // Quick messages are shown on the watch without emojis: send the original,
+                    // but only if it is still the message the watch showed.
+                    quickMessages(this).getOrNull(quickIndex)
+                        ?.takeIf { quickMessageForWatch(it) == text }
+                }
+                if (fullText == null) {
+                    Log.d(TAG, "quickMessageMismatch: $quickIndex")
+                    showSmsFailedNotification(this, getString(R.string.sms_failed_quick_message_changed))
+                } else {
+                    sendSmsFromWatch(this, phoneNumber, fullText, allowedNumbers)
+                }
             }
         )
     }
@@ -369,6 +421,12 @@ class DefaultServiceLocator(
                 readinessInfoSubject -> {
                     tracingElapsed(TAG, "readinessInfo") {
                         accountPojo(readinessInfoPojo(readinessInfo(context = this)))
+                    }
+                }
+
+                quickMessagesSubject -> {
+                    tracingElapsed(TAG, "quickMessages") {
+                        accountPojo(quickMessagesPojo(quickMessages(context = this).map { quickMessageForWatch(it) }))
                     }
                 }
 

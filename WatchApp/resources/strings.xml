@@ -1,5 +1,5 @@
 <resources>
-    <string id="listAppName" scope="glance">Handsfree</string>
+    <string id="listAppName" scope="glance">Appleton Comms</string>
 
     <string id="mainMenuItemTitleFormat">• $1$</string>
     <string id="menuSettings">Settings</string>
@@ -75,6 +75,26 @@
 
     <string id="readinessCallControl">Call control</string>
     <string id="readinessOutgoingCalls">Outgoing calls</string>
+    <string id="readinessMessages">Text messages</string>
+
+    <string id="actionCall">Ligar</string>
+    <string id="actionQuickMessage">Mensagem rápida</string>
+    <string id="actionWriteMessage">Escrever mensagem</string>
+    <string id="noQuickMessages">Sem mensagens</string>
+    <string id="noQuickMessagesHint">Definir no telemóvel</string>
+    <string id="messageConfirmFormat">Enviar a $1$?</string>
+    <string id="messageConfirmHint">GPS enviar  BACK cancelar</string>
+    <string id="messageSending">A enviar...</string>
+    <string id="messageSent">SMS enviada</string>
+    <string id="messageFailed">Falha no envio</string>
+    <string id="messageFailedHint">BACK para voltar</string>
+    <string id="searchContacts">Pesquisar</string>
+    <string id="searchSearching">A pesquisar...</string>
+    <string id="searchNoResults">Sem resultados</string>
+    <string id="searchNoAccess">Sem acesso</string>
+    <string id="searchNoAccessHint">Ativar Contacts no telemóvel</string>
+    <string id="searchFailed">Sem resposta</string>
+    <string id="searchRetryHint">GPS para repetir</string>
     <string id="readinessFormatNotEnabled">$1$&#10;not enabled</string>
     <string id="readinessFormatNotPermitted">$1$&#10;not permitted</string>
     <string id="readinessFormatNotReady">$1$&#10;not ready</string>

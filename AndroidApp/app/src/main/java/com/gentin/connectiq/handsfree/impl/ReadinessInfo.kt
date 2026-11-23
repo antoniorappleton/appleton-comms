@@ -5,6 +5,7 @@ import com.gentin.connectiq.handsfree.R
 import com.gentin.connectiq.handsfree.globals.Readiness
 import com.gentin.connectiq.handsfree.globals.essentialsAreOn
 import com.gentin.connectiq.handsfree.globals.incomingCallsAreOn
+import com.gentin.connectiq.handsfree.globals.messagesAreOn
 import com.gentin.connectiq.handsfree.globals.outgoingCallsAreOn
 import com.gentin.connectiq.handsfree.globals.readiness
 import com.gentin.connectiq.handsfree.globals.recentsAreOn
@@ -19,7 +20,8 @@ data class ReadinessInfo(
     @SerialName("o") val outgoingCalls: Readiness,
     @SerialName("s") val starredContacts: Readiness,
     @SerialName("r") val recents: Readiness,
-    @SerialName("i") val incomingCalls: Readiness
+    @SerialName("i") val incomingCalls: Readiness,
+    @SerialName("m") val messages: Readiness
 )
 
 fun readinessInfo(context: Context): ReadinessInfo {
@@ -43,6 +45,10 @@ fun readinessInfo(context: Context): ReadinessInfo {
         starredContacts = readiness(
             starredContactsAreOn(context),
             hasRequiredPermissionsForStarredContacts(context)
+        ),
+        messages = readiness(
+            messagesAreOn(context),
+            hasRequiredPermissionsForMessages(context)
         )
     )
     return readinessInfo
@@ -62,6 +68,10 @@ fun hasRequiredPermissionsForOutgoingCalls(context: Context): Boolean {
 
 fun hasRequiredPermissionsForIncomingCalls(context: Context): Boolean {
     return requiredPermissionsGranted(context, R.string.onboarding_incoming_calls)
+}
+
+fun hasRequiredPermissionsForMessages(context: Context): Boolean {
+    return requiredPermissionsGranted(context, R.string.onboarding_messages)
 }
 
 fun hasRequiredPermissionsForRecents(context: Context): Boolean {

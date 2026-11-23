@@ -15,3 +15,5 @@ WatchApp/jungle-prod
 WatchApp/manifest-prod.xml
 __pycache__
 WatchApp/l
+AndroidApp/build/
+AndroidApp/app/build/
