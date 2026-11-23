@@ -88,6 +88,12 @@
     <string id="messageSent">SMS enviada</string>
     <string id="messageFailed">Falha no envio</string>
     <string id="messageFailedHint">BACK para voltar</string>
+    <string id="actionSendLocation">Enviar localização</string>
+    <string id="locationMessagePrefix">Estou aqui:</string>
+    <string id="locationSearching">A obter GPS...</string>
+    <string id="locationSearchingHint">Ao ar livre é mais rápido</string>
+    <string id="locationFailed">Sem sinal GPS</string>
+    <string id="locationFailedHint">BACK para voltar</string>
     <string id="searchContacts">Pesquisar</string>
     <string id="searchSearching">A pesquisar...</string>
     <string id="searchNoResults">Sem resultados</string>

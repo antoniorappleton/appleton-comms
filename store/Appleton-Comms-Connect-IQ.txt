@@ -31,6 +31,7 @@ o comando do seu telemóvel Android para chamadas e mensagens:
   (por exemplo "Estou a caminho." ou "Já te ligo.").
 - Escrever uma mensagem livre no relógio, com um teclado pensado para os
   botões, com as letras agrupadas pela frequência em português.
+- Enviar a sua localização GPS por SMS, com um link que abre no Google Maps.
 - Confirmação antes de enviar cada mensagem.
 
 As mensagens são enviadas pelo seu telemóvel, como uma SMS normal do seu
@@ -66,6 +67,7 @@ remote for calls and text messages on your Android phone:
 - Accept, decline and hang up calls on the watch.
 - Send an SMS in one click: pick one of your quick messages.
 - Write a free-text message on the watch with a button-friendly keyboard.
+- Send your GPS location by SMS, with a link that opens in Google Maps.
 - Every message is confirmed before it is sent.
 
 Messages are sent by your phone, as a normal SMS from your number. Quick
@@ -81,10 +83,10 @@ https://github.com/grigorye/Handsfree
 
 4. NOVIDADES DESTA VERSÃO (campo "What's new")
 -----------------------------------------------
-PT: Novo: Pesquisar, no topo da lista, encontra qualquer contacto da agenda do
-telemóvel para ligar ou enviar SMS.
-EN: New: Search, at the top of the list, finds any contact in your phone's
-address book to call or text.
+PT: Novo: Enviar localização. O relógio obtém a posição GPS e envia uma SMS
+com um link do Google Maps a qualquer contacto.
+EN: New: Send location. The watch gets a GPS fix and texts a Google Maps link
+to any contact.
 
 
 5. MANUAL DE UTILIZAÇÃO
@@ -153,7 +155,19 @@ address book to call or text.
  5. "Sem acesso": ligue Contacts na app Android, em Controls.
     "Sem resposta": o telemóvel não respondeu. Carregue em GPS para repetir.
 
-5.7 Problemas frequentes
+5.7 Enviar a localização
+
+ 1. Escolha um contacto (favorito, recente ou pesquisado) > Enviar localização.
+ 2. O relógio procura sinal GPS (até 1 minuto; ao ar livre é mais rápido).
+ 3. No ecrã "Enviar a <nome>?", carregue em GPS. A SMS diz, por exemplo:
+      Estou aqui: https://maps.google.com/?q=38.72230,-9.13930
+    O link abre o Google Maps no ponto exato. As coordenadas também se leem
+    no texto, mesmo sem Internet.
+ 4. "Sem sinal GPS": vá para um local aberto e tente de novo.
+    Ao instalar ou atualizar, a Connect IQ pede autorização para a app
+    usar o GPS (Localização). Aceite.
+
+5.8 Problemas frequentes
 
  - "Call control not enabled" ou "Text messages not enabled": ligue a
    opção correspondente na app Android, em Controls.

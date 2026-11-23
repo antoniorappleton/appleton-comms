@@ -124,6 +124,7 @@ class ContactActionsView extends WatchUi.Menu2 {
         addItem(new WatchUi.MenuItem(Rez.Strings.actionCall, getPhoneNumber(phone), :call, null));
         addItem(new WatchUi.MenuItem(Rez.Strings.actionQuickMessage, null, :quick, null));
         addItem(new WatchUi.MenuItem(Rez.Strings.actionWriteMessage, null, :write, null));
+        addItem(new WatchUi.MenuItem(Rez.Strings.actionSendLocation, null, :location, null));
     }
 }
 
@@ -151,6 +152,8 @@ class ContactActionsDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == :write) {
             var keyboard = new KeyboardView(phone);
             VT.pushView(V_keyboard, keyboard, new KeyboardDelegate(keyboard), WatchUi.SLIDE_LEFT);
+        } else if (id == :location) {
+            openSendLocation(phone);
         }
     }
 
