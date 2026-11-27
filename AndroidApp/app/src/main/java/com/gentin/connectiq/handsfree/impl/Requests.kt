@@ -13,7 +13,9 @@ data class SendSmsArgs(
     @SerialName("n") val number: String,
     @SerialName("t") val text: String,
     // Index of the quick message the watch showed as [text]; the phone sends the full message.
-    @SerialName("q") val quickIndex: Int? = null
+    @SerialName("q") val quickIndex: Int? = null,
+    // Identifies the request; the phone reports the sending result for it. Absent from older watch apps.
+    @SerialName("i") val requestId: Int? = null
 )
 
 @Serializable

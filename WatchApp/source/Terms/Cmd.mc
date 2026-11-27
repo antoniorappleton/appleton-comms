@@ -24,6 +24,8 @@ const Cmd_sendSms = "s";
 const SmsArgsK_number = "n";
 const SmsArgsK_text = "t";
 const SmsArgsK_quickIndex = "q";
+// Identifies the request: the phone answers with InCmd_smsResult for it.
+const SmsArgsK_requestId = "i";
 
 (:background)
 const OpenMeArgsK_messageForWakingUp = "m";

@@ -71,6 +71,9 @@ function handleRemoteMessageData(data as Lang.Object) as Void {
         case InCmd_searchResults:
             handleSearchResultsMsg(args);
             break;
+        case InCmd_smsResult:
+            handleSmsResultMsg(args);
+            break;
         default:
             if (debug) { _3(LX_REMOTE_MSG, "unknownCmd", cmd); }
             break;
@@ -85,6 +88,15 @@ function handleSearchResultsMsg(args as Lang.Object or Null) as Void {
         return;
     }
     Messaging.handleSearchResults(args);
+}
+
+// The result of sending a text message only matters to the app on screen.
+(:background, :typecheck(disableBackgroundCheck))
+function handleSmsResultMsg(args as Lang.Object or Null) as Void {
+    if (runningInBackground) {
+        return;
+    }
+    Messaging.handleSmsResult(args);
 }
 
 typedef SubjectName as Lang.String;

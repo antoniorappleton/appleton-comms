@@ -1,6 +1,7 @@
 import Toybox.Application;
 import Toybox.Communications;
 import Toybox.Lang;
+import Toybox.System;
 import Toybox.WatchUi;
 
 const L_MESSAGING as LogComponent = "messaging";
@@ -82,7 +83,7 @@ function sendMessage(phone as Phone, text as Lang.String, quickIndex as Lang.Num
 
     var number = getPhoneNumber(phone);
     if (number == null) {
-        statusView.setState(MESSAGE_FAILED);
+        statusView.setFailed(null);
         return;
     }
     if (debug) { _3(L_MESSAGING, "send", number); }
@@ -94,7 +95,74 @@ function sendMessage(phone as Phone, text as Lang.String, quickIndex as Lang.Num
     if (quickIndex != null) {
         msg[SmsArgsK_quickIndex] = quickIndex;
     }
+    // Retransmissions reuse the same id, so the phone sends the message once.
+    var requestId = System.getTimer();
+    msg[SmsArgsK_requestId] = requestId;
+    pendingSmsId = requestId;
+    pendingStatusView = statusView;
     Req.transmitWithRetry("sms", msg, new SendMessageListener(statusView));
+}
+
+// The message waiting for its result from the phone.
+var pendingSmsId as Lang.Number or Null = null;
+var pendingStatusView as MessageStatusView or Null = null;
+
+// Error codes reported by the phone (SmsResultArgs_error); keep in sync with SmsSender.kt.
+const SmsError_phone = 1;
+const SmsError_noService = 2;
+const SmsError_disabled = 3;
+const SmsError_permission = 4;
+const SmsError_number = 5;
+const SmsError_rate = 6;
+const SmsError_tooLong = 7;
+const SmsError_quickChanged = 8;
+
+// The phone's report of the actual sending. "SMS enviada" is already shown once the phone got
+// the request, so only a failure changes what the user sees: the watch vibrates and says why,
+// even if it already went back to the contact list.
+function handleSmsResult(args as Lang.Object or Null) as Void {
+    if (!(args instanceof Lang.Dictionary)) {
+        return;
+    }
+    var dict = args as Lang.Dictionary;
+    var id = pendingSmsId;
+    if (id == null || !id.equals(dict[SmsResultArgs_requestId] as Lang.Object or Null)) {
+        if (debug) { _2(L_MESSAGING, "staleSmsResult"); }
+        return;
+    }
+    var view = pendingStatusView;
+    pendingSmsId = null;
+    pendingStatusView = null;
+    var error = dict[SmsResultArgs_error] as Lang.Object or Null;
+    if (error == null) {
+        // Normally the "sent" state is already on screen; this covers a result that came first.
+        if (view != null) {
+            view.setState(MESSAGE_SENT);
+        }
+        return;
+    }
+    if (debug) { _3(L_MESSAGING, "smsError", error); }
+    var reason = smsErrorReason(error);
+    if (view != null && VT.topView() == view) {
+        view.setFailed(reason);
+        return;
+    }
+    var failedView = new MessageStatusView();
+    failedView.setFailed(reason);
+    VT.pushView(V_messageStatus, failedView, new MessageStatusDelegate(), WatchUi.SLIDE_LEFT);
+}
+
+function smsErrorReason(error as Lang.Object) as StringOrResource {
+    switch (error) {
+        case SmsError_noService: { return Rez.Strings.smsErrorNoService; }
+        case SmsError_disabled: { return Rez.Strings.smsErrorDisabled; }
+        case SmsError_permission: { return Rez.Strings.smsErrorPermission; }
+        case SmsError_number: { return Rez.Strings.smsErrorNumber; }
+        case SmsError_rate: { return Rez.Strings.smsErrorRate; }
+        case SmsError_tooLong: { return Rez.Strings.smsErrorTooLong; }
+        case SmsError_quickChanged: { return Rez.Strings.smsErrorQuickChanged; }
+        default: { return Rez.Strings.smsErrorPhone; }
+    }
 }
 
 class SendMessageListener extends Communications.ConnectionListener {
@@ -105,6 +173,7 @@ class SendMessageListener extends Communications.ConnectionListener {
         self.statusView = statusView;
     }
 
+    // The phone got the request; its own result follows in InCmd_smsResult.
     function onComplete() as Void {
         if (debug) { _2(L_MESSAGING, "sent"); }
         statusView.setState(MESSAGE_SENT);
@@ -112,7 +181,11 @@ class SendMessageListener extends Communications.ConnectionListener {
 
     function onError() as Void {
         if (debug) { _2(L_MESSAGING, "failed"); }
-        statusView.setState(MESSAGE_FAILED);
+        if (pendingStatusView == statusView) {
+            pendingSmsId = null;
+            pendingStatusView = null;
+        }
+        statusView.setFailed(Rez.Strings.smsErrorNoConnection);
     }
 }
 

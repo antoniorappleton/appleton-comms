@@ -1,3 +1,4 @@
+import Toybox.Attention;
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.Timer;
@@ -82,12 +83,18 @@ class ConfirmMessageDelegate extends WatchUi.BehaviorDelegate {
 class MessageStatusView extends WatchUi.View {
     private var state as MessageState = MESSAGE_SENDING;
     private var timer as Timer.Timer or Null;
+    // Why sending failed, shown under "Falha no envio".
+    private var reason as StringOrResource or Null;
 
     function initialize() {
         View.initialize();
     }
 
+    // A failure is final: a late "sent" must not hide it.
     function setState(newState as MessageState) as Void {
+        if (state == newState || state == MESSAGE_FAILED) {
+            return;
+        }
         state = newState;
         WatchUi.requestUpdate();
         if (newState == MESSAGE_SENT) {
@@ -95,6 +102,23 @@ class MessageStatusView extends WatchUi.View {
             t.start(method(:leave), messageSentDisplayMs, false);
             timer = t;
         }
+    }
+
+    // Shows the failure (it stays until BACK) and vibrates, in case the user looked away.
+    function setFailed(failureReason as StringOrResource or Null) as Void {
+        stopTimer();
+        reason = failureReason;
+        if (state != MESSAGE_FAILED) {
+            state = MESSAGE_FAILED;
+            if (Attention has :vibrate) {
+                Attention.vibrate([
+                    new Attention.VibeProfile(100, 300),
+                    new Attention.VibeProfile(0, 150),
+                    new Attention.VibeProfile(100, 300)
+                ]);
+            }
+        }
+        WatchUi.requestUpdate();
     }
 
     // Returns to the contact list, unless the user already left this screen.
@@ -106,6 +130,10 @@ class MessageStatusView extends WatchUi.View {
     }
 
     function onHide() as Void {
+        stopTimer();
+    }
+
+    private function stopTimer() as Void {
         var t = timer;
         if (t != null) {
             t.stop();
@@ -138,7 +166,11 @@ class MessageStatusView extends WatchUi.View {
                 dc.drawLine(cx - 18, cy + 18, cx + 18, cy - 18);
                 dc.setPenWidth(1);
                 message = Rez.Strings.messageFailed;
-                dc.drawText(cx, scaledY(160, h), Graphics.FONT_XTINY, loadIfResource(Rez.Strings.messageFailedHint), center);
+                var detail = reason;
+                if (detail == null) {
+                    detail = Rez.Strings.messageFailedHint;
+                }
+                dc.drawText(cx, scaledY(160, h), Graphics.FONT_XTINY, loadIfResource(detail), center);
                 break;
             }
             default: {

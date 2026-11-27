@@ -29,6 +29,9 @@ import com.gentin.connectiq.handsfree.terms.searchListArg
 import com.gentin.connectiq.handsfree.terms.searchQueryArg
 import com.gentin.connectiq.handsfree.terms.searchResultsCmd
 import com.gentin.connectiq.handsfree.terms.setPhonesV1Cmd
+import com.gentin.connectiq.handsfree.terms.smsErrorArg
+import com.gentin.connectiq.handsfree.terms.smsRequestIdArg
+import com.gentin.connectiq.handsfree.terms.smsResultCmd
 import com.gentin.connectiq.handsfree.terms.subjectValue
 import com.gentin.connectiq.handsfree.terms.subjectVersion
 import com.gentin.connectiq.handsfree.terms.subjectsArg
@@ -120,6 +123,11 @@ interface OutgoingMessageDispatcher {
         destination: OutgoingMessageDestination,
         query: String,
         contacts: List<ContactData>?
+    )
+    fun sendSmsResult(
+        destination: OutgoingMessageDestination,
+        requestId: Int,
+        error: Int?
     )
     fun sendOpenMeCompleted(
         destination: OutgoingMessageDestination,
@@ -301,6 +309,23 @@ class DefaultOutgoingMessageDispatcher(
         }
         val msg = mapOf(
             cmdMsgField to searchResultsCmd,
+            argsMsgField to args
+        )
+        send(OutgoingMessage(destination, msg))
+    }
+
+    // [error] is null when the message was sent, otherwise an SMS_ERROR_* code.
+    override fun sendSmsResult(
+        destination: OutgoingMessageDestination,
+        requestId: Int,
+        error: Int?
+    ) {
+        val args = mutableMapOf<String, Any>(smsRequestIdArg to requestId)
+        if (error != null) {
+            args[smsErrorArg] = error
+        }
+        val msg = mapOf(
+            cmdMsgField to smsResultCmd,
             argsMsgField to args
         )
         send(OutgoingMessage(destination, msg))

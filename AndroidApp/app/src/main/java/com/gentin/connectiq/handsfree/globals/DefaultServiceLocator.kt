@@ -58,6 +58,7 @@ import com.gentin.connectiq.handsfree.impl.readinessInfo
 import com.gentin.connectiq.handsfree.impl.readinessInfoPojo
 import com.gentin.connectiq.handsfree.impl.quickMessagesPojo
 import com.gentin.connectiq.handsfree.impl.recentsPojo
+import com.gentin.connectiq.handsfree.impl.SMS_ERROR_QUICK_CHANGED
 import com.gentin.connectiq.handsfree.impl.sendSmsFromWatch
 import com.gentin.connectiq.handsfree.impl.showSmsFailedNotification
 import com.gentin.connectiq.handsfree.R
@@ -88,6 +89,10 @@ const val phonesLimitLowMemory = 20
 const val phonesLimitFullFeatured = 20
 const val searchResultsLimit = 10
 const val searchQueryMaxLength = 30
+
+// When the result of a text message is sent to the watch (see sendSmsImp).
+private val smsResultDelaysOk = listOf(1_000L)
+private val smsResultDelaysFailed = listOf(1_000L, 4_000L)
 
 class DefaultServiceLocator(
     base: Context?,
@@ -279,7 +284,27 @@ class DefaultServiceLocator(
                 Log.d(TAG, "contactsSearchResults: ${contacts?.size}")
                 outgoingMessageDispatcher.sendSearchResults(destination, query, contacts)
             },
-            sendSmsImp = { _, phoneNumber, text, quickIndex ->
+            sendSmsImp = { source, args ->
+                val phoneNumber = args.number
+                val text = args.text
+                val quickIndex = args.quickIndex
+                val requestId = args.requestId
+                // The watch shows why a message failed (older watch apps send no request id).
+                // A result that comes at once (e.g. airplane mode) would reach the watch while it still
+                // waits for the ack of its own request, and get lost: so it is delayed, and a failure
+                // is sent once more (the watch ignores the repeat). Nothing tells us if it arrived.
+                val reportResult: (Int?) -> Unit = { error ->
+                    if (requestId != null) {
+                        val destination = OutgoingMessageDestination(source.device, source.app)
+                        val delays = if (error == null) smsResultDelaysOk else smsResultDelaysFailed
+                        val handler = Handler(Looper.getMainLooper())
+                        for (delayMs in delays) {
+                            handler.postDelayed({
+                                outgoingMessageDispatcher.sendSmsResult(destination, requestId, error)
+                            }, delayMs)
+                        }
+                    }
+                }
                 // Favourites, recents, and any number in the phone's contacts (found by searching on the watch).
                 val inContacts = starredContactsAreOn(this) && hasContactsPermission() &&
                     try {
@@ -302,8 +327,9 @@ class DefaultServiceLocator(
                 if (fullText == null) {
                     Log.d(TAG, "quickMessageMismatch: $quickIndex")
                     showSmsFailedNotification(this, getString(R.string.sms_failed_quick_message_changed))
+                    reportResult(SMS_ERROR_QUICK_CHANGED)
                 } else {
-                    sendSmsFromWatch(this, phoneNumber, fullText, allowedNumbers)
+                    sendSmsFromWatch(this, phoneNumber, fullText, allowedNumbers, requestId, reportResult)
                 }
             }
         )
